@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pembayaran Digital</title>
+  <style>
+    :root {
+      --text-color: #ffffff;
+      --box-color: rgba(0, 0, 0, 0.6);
+      --button-color: #00c6ff;
+      --hover-color: #009ace;
+      --footer-color: #cccccc;
+    }
+
+    body.light {
+      --text-color: #000000;
+      --box-color: rgba(255, 255, 255, 0.85);
+      --button-color: #0077cc;
+      --hover-color: #005fa3;
+      --footer-color: #444444;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text-color);
+      background: #000;
+      overflow-x: hidden;
+      transition: color 0.4s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/star.png') repeat;
+      background-size: cover;
+      z-index: -3;
+      animation: twinkle 100s linear infinite;
+    }
+
+    @keyframes twinkle {
+      from {background-position: 0 0;}
+      to {background-position: -10000px 5000px;}
+    }
+
+    .shooting-star {
+      position: fixed;
+      width: 2px;
+      height: 80px;
+      background: linear-gradient(-45deg, white, rgba(255,255,255,0));
+      top: -100px;
+      left: 50%;
+      animation: shoot 3s ease-out infinite;
+      z-index: -2;
+    }
+
+    @keyframes shoot {
+      0% {
+        transform: translateX(0) translateY(0) rotate(45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-600px) translateY(600px) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 0;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 1000;
+    }
+
+    .header img {
+      height: 40px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      background: var(--button-color);
+      border: none;
+      padding: 0.4rem 0.8rem;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--hover-color);
+      transform: scale(1.05);
+    }
+
+    .content {
+      flex: 1;
+      margin-top: 100px;
+      padding: 2rem 1rem;
+    }
+
+    .payment-box {
+      background: var(--box-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      color: var(--text-color);
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo {
+      width: 100px;
+      margin-bottom: 1rem;
+    }
+
+    .number {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0.5rem 0;
+    }
+
+    .copy-btn {
+      margin-top: 0.3rem;
+      padding: 0.5rem 1.2rem;
+      font-size: 1rem;
+      background: var(--button-color);
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--hover-color);
+      transform: scale(1.05);
+    }
+
+    .qris-img {
+      width: 250px;
+      border-radius: 12px;
+      margin-top: 1rem;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .qris-img:hover {
+      transform: scale(1.05);
+    }
+
+    .rules {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      background: var(--box-color);
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      color: var(--text-color);
+      font-size: 0.95rem;
+      box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    }
+
+    .rules p {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--footer-color);
+      margin-top: auto;
+    }
+
+    #galaxy-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: radial-gradient(circle at top left, #00c6ff, #1a1a40);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00c6ff;
+      opacity: 0;
+      pointer-events: none;
+      font-size: 1rem;
+      z-index: 9999;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    #galaxy-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="shooting-star"></div>
+
+  <div class="overlay">
+    <!-- Header -->
+    <div class="header">
+      <img src="https://files.catbox.moe/6z6wjr.jpg" alt="Logo Website">
+      <div class="controls">
+        <button class="btn" onclick="toggleMode()">🌙/☀️</button>
+        <button class="btn" onclick="setLanguage('id')">ID</button>
+        <button class="btn" onclick="setLanguage('en')">EN</button>
+      </div>
+    </div>
+
+    <!-- Konten -->
+    <div class="content">
+      <h1 id="title">Pembayaran Digital</h1>
+
+      <!-- Dana -->
+      <div class="payment-box">
+        <img src="https://files.catbox.moe/aln6lj.jpg" class="logo" alt="Dana">
+        <div class="number" id="dana">082217179612</div>
+        <button class="copy-btn" onclick="copyToClipboard('dana')" id="btn-dana">Salin Nomor Dana</button>
+      </div>
+
+      <!-- OVO -->
+      <div class="payment-box">
+        <img src="https://files.catbox.moe/f4lonq.jpg" class="logo" alt="OVO">
+        <div class="number" id="ovo">082250804883</div>
+        <button class="copy-btn" onclick="copyToClipboard('ovo')" id="btn-ovo">Salin Nomor OVO</button>
+      </div>
+
+      <!-- Gopay -->
+      <div class="payment-box">
+        <img src="https://files.catbox.moe/admggm.png" class="logo" alt="Gopay">
+        <div class="number" id="gopay">082350804883</div>
+        <button class="copy-btn" onclick="copyToClipboard('gopay')" id="btn-gopay">Salin Nomor Gopay</button>
+      </div>
+
+      <!-- QRIS -->
+      <div class="payment-box">
+        <img src="https://qu.ax/acLyy.jpg" class="logo" alt="QRIS">
+        <div id="qris-text">Scan QRIS untuk pembayaran:</div>
+        <img src="https://yourdomain.com/qris.png" alt="QRIS" class="qris-img" />
+      </div>
+    </div>
+
+    <!-- Aturan -->
+    <div class="rules">
+      <p>📌 <strong>Perhatian:</strong> Pastikan nominal transfer sesuai dan kirim bukti pembayaran ke admin setelah melakukan transaksi.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>© ZenithMarket</footer>
+  </div>
+
+  <!-- Galaxy Toast -->
+  <div id="galaxy-toast">📋 Nomor berhasil disalin!</div>
+
+  <script>
+    function copyToClipboard(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showGalaxyToast("📋 Nomor berhasil disalin!");
+      });
+    }
+
+    function showGalaxyToast(message) {
+      const toast = document.getElementById("galaxy-toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("light");
+    }
+
+    function setLanguage(lang) {
+      const translations = {
+        id: {
+          title: "Pembayaran Digital",
+          "btn-dana": "Salin Nomor Dana",
+          "btn-ovo": "Salin Nomor OVO",
+          "btn-gopay": "Salin Nomor Gopay",
+          "qris-text": "Scan QRIS untuk pembayaran:"
+        },
+        en: {
+          title: "Digital Payment",
+          "btn-dana": "Copy Dana Number",
+          "btn-ovo": "Copy OVO Number",
+          "btn-gopay": "Copy Gopay Number",
+          "qris-text": "Scan QRIS to pay:"
+        }
+      };
+
+      const text = translations[lang];
+      for (const id in text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text[id];
+      }
+    }
+  </script>
+</body>
+</html>
